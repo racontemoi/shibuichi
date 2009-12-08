@@ -3,7 +3,7 @@
 global $project;
 $project = 'mysite';
 
-require_once(str_replace('//','/',__DIR__.'/') .'../.shi/shi.php');
+require_once(str_replace('//','/',dirname(__FILE__).'/') .'../.shi/shi.php');
 
 if (_shi('admin_set') > 0)
         Security::setDefaultAdmin(_shi('admin_user', 'admin_password'));
