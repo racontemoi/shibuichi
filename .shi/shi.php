@@ -26,9 +26,9 @@ function _shi($key)
                         if (file_exists($file)) {
                                 $lines = file($file);
                                 foreach ($lines as $j => $line) {
-                                        list($key, $value) = array_map('trim', explode(' ', $line));
-                                        if ($key != '')
-                                                $shi[$key] = $value;
+                                        list($new_key, $value) = array_map('trim', explode(' ', $line));
+                                        if ($new_key != '')
+                                                $shi[$new_key] = $value;
                                 }
                         }
                 }
