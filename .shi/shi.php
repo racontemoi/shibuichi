@@ -17,6 +17,8 @@ function _shi($key)
                 $shi = array();
                 $files_to_read = array();
                 $files_to_read[] = str_replace('//','/',dirname(__FILE__).'/shi.conf');
+                $files_to_read[] = str_replace('//','/',dirname(__FILE__).'/../shi.conf');
+                $files_to_read[] = str_replace('//','/',dirname(__FILE__).'/../../shi.conf');
                 if (isset($_SERVER['SHI_ENVFILE']))
                         $files_to_read[] = $_SERVER['SHI_ENVFILE'];
                 foreach ($files_to_read as $i => $file) {
