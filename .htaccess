@@ -1,3 +1,4 @@
+
 ### SILVERSTRIPE START ###
 <Files *.ss>
 Order deny,allow
@@ -7,6 +8,7 @@ Allow from 127.0.0.1
 
 <IfModule mod_rewrite.c>
 RewriteEngine On
+RewriteBase /
 
 RewriteCond %{REQUEST_URI} !(\.gif$)|(\.jpg$)|(\.png$)|(\.css$)|(\.js$) 
 

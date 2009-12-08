@@ -10,12 +10,12 @@ if (_shi('admin_set') > 0)
 
 global $databaseConfig;
 $databaseConfig = array(
-	'type' => _shi('db_type'),
+	'type' => 'MySQLDatabase',
         'server' => _shi('db_server'),
         'username' => _shi('db_username'),
-        'password' => _shi('db_password'));
-
-$database = _shi('db_name');
+        'password' => _shi('db_password'),
+        'database' => _shi('db_name')
+);
 
 if (_shi('mode') == 'dev')
         Director::set_environment_type('dev');
