@@ -8,7 +8,7 @@ $user = _shi('db_username');
 $password = _shi('db_password');
 $mysqldump = _shi('tool_mysqldump');
 
-$dump = `$mysqldump --user $user --password $password --server $server $database`;
+$dump = `$mysqldump --user $user --password $password --host $server $database`;
 $dump_file = _shi('web_root') . '/shi_dump/current.sql';
 file_put_contents($dump_file, $dump);
 echo "OK.";
