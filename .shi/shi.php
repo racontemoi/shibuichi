@@ -15,7 +15,7 @@ function _shi($key)
         static $shi;
         if (!isset($shi)) {
                 $shi = array();
-                $shi['web_root'] = realpath(str_replace('//','/',dirname(__FILE__).'/../');
+                $shi['web_root'] = realpath(str_replace('//','/',dirname(__FILE__).'/../'));
                 $files_to_read = array();
                 $files_to_read[] = str_replace('//','/',dirname(__FILE__).'/shi.conf');
                 $files_to_read[] = str_replace('//','/',dirname(__FILE__).'/../shi.conf');
