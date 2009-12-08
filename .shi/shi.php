@@ -15,6 +15,7 @@ function _shi($key)
         static $shi;
         if (!isset($shi)) {
                 $shi = array();
+                $shi['web_root'] = realpath(str_replace('//','/',dirname(__FILE__).'/../');
                 $files_to_read = array();
                 $files_to_read[] = str_replace('//','/',dirname(__FILE__).'/shi.conf');
                 $files_to_read[] = str_replace('//','/',dirname(__FILE__).'/../shi.conf');
@@ -25,9 +26,9 @@ function _shi($key)
                         if (file_exists($file)) {
                                 $lines = file($file);
                                 foreach ($lines as $j => $line) {
-                                        list($new_key, $value) = array_map('trim', explode(' ', $line));
-                                        if ($new_key != '')
-                                                $shi[$new_key] = $value;
+                                        list($key, $value) = array_map('trim', explode(' ', $line));
+                                        if ($key != '')
+                                                $shi[$key] = $value;
                                 }
                         }
                 }
