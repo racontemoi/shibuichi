@@ -79,6 +79,11 @@ class CheckboxSetField extends OptionsetField {
 		
 		$odd = 0;
 		$options = '';
+		
+		if ($source == null) {
+			$source = array();
+			$options = "<li>No options available</li>";
+		}
 
 		foreach($source as $index => $item) {
 			if(is_a($item, 'DataObject')) {
@@ -152,7 +157,7 @@ class CheckboxSetField extends OptionsetField {
 	}
 	
 	/**
-	 * Return the CheckboxSetField value as an array 
+	 * Return the CheckboxSetField value as an string 
 	 * selected item keys.
 	 * 
 	 * @return string

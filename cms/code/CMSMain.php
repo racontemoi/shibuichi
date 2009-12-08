@@ -85,31 +85,21 @@ class CMSMain extends LeftAndMain implements CurrentPageIdentifier, PermissionPr
 		
 		// Locale" attribute is either explicitly added by LeftAndMain Javascript logic,
 		// or implied on a translated record (see {@link Translatable->updateCMSFields()}).
-		if(Translatable::is_enabled()) {
-			// $Lang serves as a "context" which can be inspected by Translatable - hence it
-			// has the same name as the database property on Translatable.
-			if($this->getRequest()->requestVar("Locale")) {
-				$this->Locale = $this->getRequest()->requestVar("Locale");
-			} elseif($this->getRequest()->requestVar("locale")) {
-				$this->Locale = $this->getRequest()->requestVar("locale");
-			} else {
-				$this->Locale = Translatable::default_locale();
-			}
-			Translatable::set_current_locale($this->Locale);
-		}
-		
-		// collect languages for TinyMCE spellchecker plugin
-		if(Translatable::is_enabled()) {
-			$spellcheckLangs = Translatable::get_existing_content_languages();
+		// $Lang serves as a "context" which can be inspected by Translatable - hence it
+		// has the same name as the database property on Translatable.
+		if($this->getRequest()->requestVar("Locale")) {
+			$this->Locale = $this->getRequest()->requestVar("Locale");
+		} elseif($this->getRequest()->requestVar("locale")) {
+			$this->Locale = $this->getRequest()->requestVar("locale");
 		} else {
-			$defaultLang = Translatable::default_locale();
-			$spellcheckLangs = array($defaultLang => i18n::get_locale_name($defaultLang));
+			$this->Locale = Translatable::default_locale();
 		}
-		$spellcheckSpec = array();
-		foreach($spellcheckLangs as $lang => $title) $spellcheckSpec[] = "{$title}={$lang}";
-
-		// Set custom options for TinyMCE specific to CMSMain
-		HtmlEditorConfig::get('cms')->setOption('spellchecker_languages', '+' . implode(',', $spellcheckSpec));
+		Translatable::set_current_locale($this->Locale);
+		
+		// collect languages for TinyMCE spellchecker plugin.
+		// see http://wiki.moxiecode.com/index.php/TinyMCE:Plugins/spellchecker
+		$langName = i18n::get_locale_name($this->Locale);
+		HtmlEditorConfig::get('cms')->setOption('spellchecker_languages', "+{$langName}={$this->Locale}");
 				
 		Requirements::javascript(CMS_DIR . '/javascript/CMSMain.js');
 		Requirements::javascript(CMS_DIR . '/javascript/CMSMain_left.js');
@@ -716,7 +706,7 @@ JS;
 
 	function performRollback($id, $version) {
 		$record = DataObject::get_by_id($this->stat('tree_class'), $id);
-		if($record && !$record->canPublish()) return Security::permissionFailure($this);
+		if($record && !$record->canEdit()) return Security::permissionFailure($this);
 		
 		$record->doRollbackTo($version);
 		return $record;

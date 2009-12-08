@@ -26,6 +26,7 @@ class FilesystemPublisher extends StaticPublisher {
 		if(substr($destFolder, -1) == '/') $destFolder = substr($destFolder, 0, -1);
 		$this->destFolder = $destFolder;
 		$this->fileExtension = $fileExtension;
+		parent::__construct();
 	}
 	
 	function publishPages($urls) {
@@ -36,6 +37,7 @@ class FilesystemPublisher extends StaticPublisher {
 		//$base = preg_replace('/\/[^\/]+\/\.\./','',$base) . '/';
 		
 		if(self::$static_base_url) Director::setBaseURL(self::$static_base_url);
+		if($this->fileExtension == 'php') SSViewer::setOption('rewriteHashlinks', 'php');
 		
 		$files = array();
 		$i = 0;
@@ -96,6 +98,7 @@ class FilesystemPublisher extends StaticPublisher {
 		}
 
 		if(self::$static_base_url) Director::setBaseURL(null);
+		if($this->fileExtension == 'php') SSViewer::setOption('rewriteHashlinks', true);
 
 		//Debug::show(array_keys($files));
 		//Debug::show(array_keys($missingFiles));

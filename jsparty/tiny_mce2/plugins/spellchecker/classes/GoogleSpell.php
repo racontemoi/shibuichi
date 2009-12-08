@@ -50,6 +50,9 @@ class GoogleSpell extends SpellChecker {
 	}
 
 	function &_getMatches($lang, $str) {
+		if(strpos($lang,'_') !== false) $lang = substr($lang,0,strpos($lang,'_'));
+		if(strpos($lang,'-') !== false) $lang = substr($lang,0,strpos($lang,'-'));
+
 		$server = "www.google.com";
 		$port = 443;
 		$path = "/tbproxy/spell?lang=" . $lang . "&hl=en";

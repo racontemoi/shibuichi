@@ -1,7 +1,13 @@
 <?php
 	// General settings
-	$config['general.engine'] = 'GoogleSpell';
-	//$config['general.engine'] = 'PSpell';
+
+	// Use the PSpell engine if it exists: it supports locales and is quicker than GoogleSpell
+	if(function_exists('pspell_new')) {
+		$config['general.engine'] = 'PSpell';
+	} else {
+		$config['general.engine'] = 'GoogleSpell';
+	}
+
 	//$config['general.engine'] = 'PSpellShell';
 	//$config['general.remote_rpc_url'] = 'http://some.other.site/some/url/rpc.php';
 

@@ -149,6 +149,7 @@ class Email extends ViewableData {
 		$this->cc = $cc;
 		$this->bcc = $bcc;
 		$this->setBounceHandlerURL($bounceHandlerURL);
+		parent::__construct();
 	}
 	
 	public function attachFileFromString($data, $filename, $mimetype = null) {
@@ -339,11 +340,6 @@ class Email extends ViewableData {
 
 			// Parse $ variables in the base parameters
 			$data = $this->templateData();
-			
-			foreach(array('from','to','subject','body', 'plaintext_body', 'cc', 'bcc') as $param) {
-				$template = SSViewer::fromString($this->$param);
-				$this->$param = $template->process($data);
-			}
 			
 			// Process a .SS template file
 			$fullBody = $this->body;
@@ -633,7 +629,7 @@ class Email_Template extends Email {
 class Email_BounceHandler extends Controller {
 	
 	function init() {
-		BasicAuth::disable();
+		BasicAuth::protect_entire_site(false);
 		parent::init();
 	}
 	
