@@ -26,6 +26,7 @@ if($majorVersion < 5) {
 	die();
 }
 
+require_once(str_replace('//','/',dirname(__FILE__).'/.shi/shi.php'));
 
 // Include environment files
 $usingEnv = false;
