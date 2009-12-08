@@ -10,6 +10,6 @@ $mysql = _shi('tool_mysql');
 $dump_file = _shi('web_root') . '/shi_dump/current.sql';
 
 $result = `echo use $database && cat $dump_file | $mysql --user=$user --password=$password --host=$server`;
-echo "echo use $database && cat $dump_file | $mysql --user=$user --password=$password --host=$server";
+echo "(echo use $database && cat $dump_file) | $mysql --user=$user --password=$password --host=$server";
 echo "<h1>Result</h1><pre>$result</pre>";
 ?>
