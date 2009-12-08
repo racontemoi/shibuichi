@@ -1,0 +1,68 @@
+Page:
+   homepage_en:
+      Title: Home
+      URLSegment: home
+      Locale: en_US
+   testpage_en:
+      Title: Home
+      MenuTitle: A Testpage
+      URLSegment: testpage
+      Locale: en_US
+   othertestpage_en:
+      Title: Other Testpage
+      MenuTitle: A Testpage
+      URLSegment: othertestpage
+      Locale: en_US
+   parent:
+      Title: Parent
+      URLSegment: parent
+   child1:
+      Title: Child 1
+      URLSegment: child1
+      Parent: =>Page.parent
+   child2:
+      Title: Child 2
+      URLSegment: child2
+      Parent: =>Page.parent
+   child3:
+      Title: Child 3
+      URLSegment: child3
+      Parent: =>Page.parent
+   grandchild1:
+      Title: Grandchild
+      URLSegment: grandchild1
+      Parent: =>Page.child1
+   grandchild2:
+      Title: Grandchild
+      URLSegment: grandchild2
+      Parent: =>Page.child1
+TranslatableTest_DataObject:
+   testobject_en:
+      TranslatableProperty: en_US
+      TranslatableDecoratedProperty: en_US
+TranslatableTest_Page:
+   testpage_en:
+      Title: En
+      TranslatableProperty: en_US
+      URLSegment: testpage-en
+Group:
+   cmseditorgroup:
+      Code: cmseditorgroup
+   admingroup:
+      Code: admingroup
+Member:
+   cmseditor:
+      FirstName: Editor
+      Groups: =>Group.cmseditorgroup
+   websiteuser:
+      FirstName: Website User
+   admin:
+       FirstName: Admin
+       Groups: =>Group.admingroup
+Permission:
+   cmsmaincode:
+      Code: CMS_ACCESS_CMSMain
+      Group: =>Group.cmseditorgroup
+   admincode:
+      Code: ADMIN
+      Group: =>Group.admingroup
