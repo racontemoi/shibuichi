@@ -10,6 +10,6 @@ $mysqldump = _shi('tool_mysqldump');
 
 $dump = `$mysqldump --user $user --password $password --server $server $database`;
 $dump_file = _shi('web_root') . '/shi_dump/current.sql';
-put_file_contents($dump_file, $dump);
+file_put_contents($dump_file, $dump);
 echo "OK.";
 ?>
