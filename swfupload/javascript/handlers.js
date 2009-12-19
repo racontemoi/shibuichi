@@ -59,14 +59,18 @@ function doSubmit(e) {
 				swfu.addPostParam(key,value);
 			}
 		}
-		if( typeof(form.onsubmit) == 'undefined' || (typeof(form.onsubmit == 'function' ) && form.onsubmit())) {
-			btnSubmit.disabled=true;
-			if(swfu.getStats().files_queued > 0)
-  			swfu.startUpload();
-  		else
-  		  form.submit();
-		}
-	} catch (ex) {
+		
+    // validation
+    if(typeof(form.onsubmit) == 'function' && !form.onsubmit())
+      return false;
+    
+		btnSubmit.disabled=true;
+		if(swfu.getStats().files_queued > 0)
+			swfu.startUpload();
+		else
+		  form.submit();
+	} 
+	 catch (ex) {
 		alert(ex);
 	}
 	return false;
