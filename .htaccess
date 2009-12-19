@@ -1,3 +1,4 @@
+SetEnv PHP_VER 5
 
 ### SILVERSTRIPE START ###
 <Files *.ss>
