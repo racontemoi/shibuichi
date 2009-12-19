@@ -1,2 +1,2 @@
-silverstripe-cache/.*
-silverstripe-cache/manifest*
+.*
+manifest*
