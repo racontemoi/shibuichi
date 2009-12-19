@@ -53,14 +53,15 @@ class ImageGalleryAlbum extends DataObject
 	{
 		parent::onBeforeWrite();
 		if(isset($_POST['AlbumName'])) {
+		  $clean_name = SiteTree::generateURLSegment($_POST['AlbumName']);
 			if($this->FolderID) {
-				$this->Folder()->setName($_POST['AlbumName']);
-				$this->Folder()->Title = $_POST['AlbumName'];
+				$this->Folder()->setName($clean_name);
+				$this->Folder()->Title = $clean_name;
 
 				$this->Folder()->write();
 			}
 			else {
-				$folder = Folder::findOrMake('image-gallery/'.$this->ImageGalleryPage()->RootFolder()->Name.'/'.$_POST['AlbumName']);
+				$folder = Folder::findOrMake('image-gallery/'.$this->ImageGalleryPage()->RootFolder()->Name.'/'.$clean_name);
 				$this->FolderID = $folder->ID;
 			}
 		}
