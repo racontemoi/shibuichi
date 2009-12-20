@@ -1,4 +1,5 @@
 SetEnv PHP_VER 5
+php_flag session.use_trans_sid off
 
 ### SILVERSTRIPE START ###
 <Files *.ss>
