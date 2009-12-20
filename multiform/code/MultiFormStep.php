@@ -142,7 +142,7 @@ class MultiFormStep extends DataObject {
 	 * @return array
 	 */
 	public function loadData() {
-		return unserialize($this->Data);
+		return is_string($this->Data) ? unserialize($this->Data) : array();
 	}
 	
 	/**
@@ -171,7 +171,7 @@ class MultiFormStep extends DataObject {
 	 */
 	public function saveInto($obj) {
 		$form = new Form(
-			new Controller(),
+			Controller::curr(),
 			'Form',
 			$this->getFields(),
 			new FieldSet()
@@ -230,7 +230,7 @@ class MultiFormStep extends DataObject {
 	 * @return MultiFormStep|boolean
 	 */
 	public function getNextStepFromDatabase() {
-		if($this->SessionID) {
+		if($this->SessionID && is_numeric($this->SessionID)) {
 			$nextSteps = $this->stat('next_steps');
 			if(is_string($nextSteps)) {
 				return DataObject::get_one($nextSteps, "SessionID = {$this->SessionID}");
@@ -281,7 +281,7 @@ class MultiFormStep extends DataObject {
 	 */
 	public function getPreviousStepFromDatabase() {
 		if($prevStepClass = $this->getPreviousStep()) {
-			return DataObject::get_one($prevStepClass, "SessionID = {$this->SessionID}");	
+			return DataObject::get_one($prevStepClass, "SessionID = {$this->SessionID}");
 		}
 	}
 	
