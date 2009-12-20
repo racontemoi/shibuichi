@@ -24,6 +24,12 @@ abstract class MultiForm extends Form {
 	protected $session;
 	
 	/**
+	 * The current encrypted MultiFormSession identification.
+	 * @var string
+	 */
+	protected $currentSessionHash;
+	
+	/**
 	 * Defines which subclass of {@link MultiFormStep} should be the first
 	 * step in the multi-step process.
 	 *
@@ -57,12 +63,29 @@ abstract class MultiForm extends Form {
 	);
 	
 	/**
+	 * Any of the actions defined in this variable are exempt from
+	 * being validated.
+	 * 
+	 * This is most useful for the "Back" (action_prev) action, as
+	 * you typically don't validate the form when the user is going
+	 * back a step.
+	 * 
+	 * @var array
+	 */
+	public static $actions_exempt_from_validation = array(
+		'action_prev'
+	);
+	
+	/**
 	 * Start the MultiForm instance.
 	 *
 	 * @param Controller instance $controller Controller this form is created on
 	 * @param string $name The form name, typically the same as the method name
 	 */
 	public function __construct($controller, $name) {
+		if(isset($_GET['MultiFormSessionID'])) {
+			$this->setCurrentSessionHash($_GET['MultiFormSessionID']);
+		}
 		
 		// Set up the session for this MultiForm instance
 		$this->setSession();
@@ -75,7 +98,7 @@ abstract class MultiForm extends Form {
 		$this->setCurrentStep($currentStep);
 
 		// Set the form of the step to this form instance
-		$currentStep->form = $this;
+		$currentStep->setForm($this);
 
 		// Set up the fields for the current step
 		$fields = $currentStep->getFields();
@@ -84,11 +107,24 @@ abstract class MultiForm extends Form {
 		$actions = $this->actionsFor($currentStep);
 
 		// Set up validation (if necessary)
-		// @todo find a better way instead of hardcoding a check for action_prev in order to prevent validation when hitting the back button
 		$validator = null;
-		if(empty($_REQUEST['action_prev'])) {
-			if($this->getCurrentStep()->getValidator()) {
-				$validator = $this->getCurrentStep()->getValidator();
+		$applyValidation = true;
+
+		// Check if the $_REQUEST action that user clicked is an exempt one
+		$actionNames = Object::get_static(get_class($this),'actions_exempt_from_validation');
+		if( $actionNames ) {
+			foreach( $actionNames as $exemptAction) {
+				if(!empty($_REQUEST[$exemptAction])) {
+					$applyValidation = false;
+					break;
+				} 
+			}
+		}
+
+		// Apply validation if the current step requires validation (is not exempt)
+		if($applyValidation) {
+			if($currentStep->getValidator()) {
+				$validator = $currentStep->getValidator();
 			}
 		}
 		
@@ -145,6 +181,8 @@ abstract class MultiForm extends Form {
 			$currentStep->write();
 		}
 		
+		$currentStep->setForm($this);
+		
 		return $currentStep;
 	}
 
@@ -181,17 +219,14 @@ abstract class MultiForm extends Form {
 	 * Perhaps it would be best dealt with on a separate class?
 	 */
 	protected function setSession() {
-		// If there's a MultiFormSessionID variable set, find that, otherwise create a new session
-		if(isset($_GET['MultiFormSessionID'])) {
-			$this->session = $this->getSessionRecord($_GET['MultiFormSessionID']);
-		}
-
+		$this->session = $this->getCurrentSession();
+		
 		// If there was no session found, create a new one instead
 		if(!$this->session) {
 			$this->session = new MultiFormSession();
 			$this->session->write();
 		}
-			
+		
 		// Create encrypted identification to the session instance if it doesn't exist
 		if(!$this->session->Hash) {
 			$this->session->Hash = sha1($this->session->ID . '-' . microtime());
@@ -200,13 +235,22 @@ abstract class MultiForm extends Form {
 	}
 	
 	/**
-	 * Return an instance of MultiFormSession.
-	 *
-	 * @param string $hash The unique, encrypted hash to identify the session
-	 * @return MultiFormSession
+	 * Set the currently used encrypted hash to identify
+	 * the MultiFormSession.
+	 * 
+	 * @param string $hash Encrypted identification to session
 	 */
-	function getSessionRecord($hash) {
-		$SQL_hash = Convert::raw2sql($hash);
+	function setCurrentSessionHash($hash) {
+		$this->currentSessionHash = $hash;
+	}
+	
+	/**
+	 * Return the currently used {@link MultiFormSession}
+	 * @return MultiFormSession|boolean FALSE
+	 */
+	function getCurrentSession() {
+		if(!$this->currentSessionHash) return false;
+		$SQL_hash = Convert::raw2sql($this->currentSessionHash);
 		return DataObject::get_one('MultiFormSession', "Hash = '$SQL_hash' AND IsComplete = 0");
 	}
 	
@@ -343,6 +387,7 @@ abstract class MultiForm extends Form {
 	 * @param object $form The form that the action was called on
 	 */
 	public function next($data, $form) {
+
 		// Get the next step class
 		$nextStepClass = $this->getCurrentStep()->getNextStep();
 		
