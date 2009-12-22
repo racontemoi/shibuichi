@@ -36,7 +36,7 @@ class GoogleSpreadsheet extends Object
 	{
 		$this->login($user,$pass);
 		if ($ss) $this->useSpreadsheet($ss);
-		if ($wk) $this->useWorksheet($ws);
+		if ($ws) $this->useWorksheet($ws);
 	}
 
 	function useSpreadsheet($ss,$ws=FALSE)
