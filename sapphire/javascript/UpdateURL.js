@@ -1,14 +1,31 @@
+/* -*- coding: utf-8 -*- */
 Behaviour.register({
 	'input#Form_EditForm_Title': {
 		/**
 		 * Get the URL segment to suggest a new field
 		 */
 		onchange: function() {
+	                // from http://stackoverflow.com/questions/990904/javascript-remove-accents-in-strings-in-ie6
+	                function accentsTidy(s) {
+			  var r = s.toLowerCase();
+			  r = r.replace(new RegExp("[àáâãäå]", 'g'),"a");
+			  r = r.replace(new RegExp("æ", 'g'),"ae");
+			  r = r.replace(new RegExp("ç", 'g'),"c");
+			  r = r.replace(new RegExp("[èéêë]", 'g'),"e");
+			  r = r.replace(new RegExp("[ìíîï]", 'g'),"i");
+			  r = r.replace(new RegExp("ñ", 'g'),"n");                            
+			  r = r.replace(new RegExp("[òóôõö]", 'g'),"o");
+			  r = r.replace(new RegExp("œ", 'g'),"oe");
+			  r = r.replace(new RegExp("[ùúûü]", 'g'),"u");
+			  r = r.replace(new RegExp("[ýÿ]", 'g'),"y");
+			  return r;
+			};
+
 			if(this.value.length == 0) return;
 			if(!$('Form_EditForm_URLSegment')) return;
 			
 			var urlSegmentField = $('Form_EditForm_URLSegment');
-			var newSuggestion = urlSegmentField.suggestNewValue( this.value.toLowerCase() );
+			var newSuggestion = urlSegmentField.suggestNewValue( accentsTidy( this.value ) );
 			var isNew = urlSegmentField.value.indexOf("new") == 0;
 			var confirmMessage = ss.i18n.sprintf(
 				ss.i18n._t('UPDATEURL.CONFIRM', 'Would you like me to change the URL to:\n\n%s/\n\nClick Ok to change the URL, click Cancel to leave it as:\n\n%s'),
