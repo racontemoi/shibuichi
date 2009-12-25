@@ -6,10 +6,10 @@
  */
 class CurrencyField extends TextField {
 	/**
-	 * allows the value to be set ( not including $ signs and number format...)
+	 * allows the value to be set ( not including currency signs and number format...)
 	 */
 	function setValue($val) {
-		$this->value = '$' . number_format(ereg_replace('[^0-9.]',"",$val), 2);
+		$this->value = Currency::getCurrencySymbol() . number_format(ereg_replace('[^0-9.]',"",$val), 2);
 	}
 	/**
 	 * Overwrite the datavalue before saving to the db ;-)
@@ -35,13 +35,23 @@ class CurrencyField extends TextField {
 		return new CurrencyField_Readonly($this);
 		*/
 	}
-	
+
+        function stringAsRegexElement($string) {
+                return '('.str_replace(
+                        array('\\', '(', ')', '[', ']', '{', '}', '.',
+                              '|', '?', '*', '+', '^', '$'),
+                        array('\\\\', '\\(', '\\)', '\\[', '\\]', '\\{', '\\}', '\\.',
+                              '\\|', '\\?', '\\*', '\\+', '\\^', '\\$'),
+                        $string).')';
+        }
 	/**
 	 * @see http://regexlib.com/REDetails.aspx?regexp_id=126
 	 */
 	function jsValidation() {
 		$formID = $this->form->FormName();
 		$error = _t('CurrencyField.VALIDATIONJS', 'Please enter a valid currency.');
+                $currencyex = $this->stringAsRegexElement(Currency::getCurrencySymbol());
+
 		$jsFunc =<<<JS
 Behaviour.register({
 	"#$formID": {
@@ -50,7 +60,7 @@ Behaviour.register({
 			if(!el || !el.value) return true;
 			
 			var value = \$F(el);
-			if(value.length > 0 && !value.match(/^\s*\\$?(\d{1,3}(\,\d{3})*|(\d+))(\.\d{2})?\s*\$/)) {
+			if(value.length > 0 && !value.match(/^\s*$currencyex?(\d{1,3}(\,\d{3})*|(\d+))(\.\d{2})?\s*\$/)) {
 				validationError(el,"$error","validation",false);
 				return false;
 			}
@@ -68,7 +78,8 @@ JS;
 	}
 
 	function validate($validator) {
-		if(!empty ($this->value) && !preg_match('/^\s*\$?(\d{1,3}(\,\d{3})*|(\d+))(\.\d{2})?\s*$/', $this->value)) {
+                $currencyex = $this->stringAsRegexElement(Currency::getCurrencySymbol());
+		if(!empty ($this->value) && !preg_match('/^\s*'.$currencyex.'?(\d{1,3}(\,\d{3})*|(\d+))(\.\d{2})?\s*$/', $this->value)) {
 			$validator->validationError($this->name, _t('Form.VALIDCURRENCY', "Please enter a valid currency."), "validation", false);
 			return false;
 		}
@@ -89,10 +100,10 @@ class CurrencyField_Readonly extends ReadonlyField{
 	function Field() {
 		if($this->value){
 			$val = $this->dontEscape ? ($this->reserveNL?Convert::raw2xml($this->value):$this->value) : Convert::raw2xml($this->value);
-			$val = _t('CurrencyField.CURRENCYSYMBOL', '$') . number_format(preg_replace('/[^0-9.]/',"",$val), 2);
+			$val = Currency::getCurrencySymbol() . number_format(preg_replace('/[^0-9.]/',"",$val), 2);
 			
 		}else {
-		        $val = '<i>'._t('CurrencyField.CURRENCYSYMBOL', '$').'0.00</i>';
+		        $val = '<i>'.Currency::getCurrencySymbol().'0.00</i>';
 		}
 		$valforInput = $this->value ? Convert::raw2att($val) : "";
 		return "<span class=\"readonly ".$this->extraClass()."\" id=\"" . $this->id() . "\">$val</span><input type=\"hidden\" name=\"".$this->name."\" value=\"".$valforInput."\" />";
@@ -121,10 +132,10 @@ class CurrencyField_Disabled extends CurrencyField{
 	function Field() {
 		if($this->value){
 			$val = $this->dontEscape ? ($this->reserveNL?Convert::raw2xml($this->value):$this->value) : Convert::raw2xml($this->value);
-			$val = _t('CurrencyField.CURRENCYSYMBOL', '$') . number_format(preg_replace('/[^0-9.]/',"",$val), 2);
+			$val = Currency::getCurrencySymbol() . number_format(preg_replace('/[^0-9.]/',"",$val), 2);
 			
 		}else {
-		        $val = '<i>'._t('CurrencyField.CURRENCYSYMBOL', '$').'0.00</i>';
+		        $val = '<i>'.Currency::getCurrencySymbol().'0.00</i>';
 		}
 		$valforInput = $this->value ? Convert::raw2att($val) : "";
 		return "<input class=\"text\" type=\"text\" disabled=\"disabled\" name=\"".$this->name."\" value=\"".$valforInput."\" />";

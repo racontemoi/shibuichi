@@ -37,6 +37,9 @@ class Currency extends Decimal {
 	static function setCurrencySymbol($value) {
 		self::$currencySymbol = $value;
 	}
+	static function getCurrencySymbol() {
+		return self::$currencySymbol;
+	}
 }
 
 ?>
