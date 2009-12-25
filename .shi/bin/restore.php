@@ -2,7 +2,7 @@
 
 require_once(str_replace('//','/',dirname(__FILE__).'/../shi.php'));
 
-$database = _shi('db_name');
+$database = _shi('db_name_prefix') . _shi('db_name') . _shi('db_name_suffix');
 $server = _shi('db_server');
 $user = _shi('db_username');
 $password = _shi('db_password');
