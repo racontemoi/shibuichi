@@ -300,7 +300,32 @@ class MultiFormStep extends DataObject {
 	public function getForm() {
 		return $this->form;
 	}
-	
+
+	/**
+	 * Gets the caption to use on the button to the previous step.
+	 *
+	 * @return string
+	 */
+	public function getBackText() {
+		return _t('MultiForm.BACK', 'Back');
+	}
+	/**
+	 * Gets the caption to use on the button to the next step.
+	 *
+	 * @return string
+	 */
+	public function getNextText() {
+		return _t('MultiForm.NEXT', 'Next');
+	}
+	/**
+	 * Gets the caption to use on the button to submit.
+	 *
+	 * @return string
+	 */
+	public function getSubmitText() {
+		return _t('MultiForm.SUBMIT', 'Submit');
+	}
+
 	// ##################### Utility ####################
 	
 	/**
