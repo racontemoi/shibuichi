@@ -321,7 +321,7 @@ class ImageGalleryPage_Controller extends Page_Controller
 	{
 
 		parent::init();
-		Requirements::css('image_gallery/css/ImageGallery.css');
+		Requirements::themedCSS('ImageGallery');
 	}
 	
 	public function index()
